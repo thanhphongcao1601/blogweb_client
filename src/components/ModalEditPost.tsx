@@ -14,7 +14,8 @@ import {
   Button,
 } from "@chakra-ui/react";
 import React from "react";
-import { usePostDetail } from "../pages/PostDetail.hooks";
+import { useNavigate } from "react-router-dom";
+import { useStore } from "../zustand/store";
 
 interface UserDisclosureProps {
   isOpen: boolean;
@@ -25,18 +26,20 @@ interface UserDisclosureProps {
 export const ModalEditPost: React.FC<UserDisclosureProps> = (props) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+  const navigate = useNavigate();
+
   const {
+    handleDeletePost,
+    handleEditPost,
+    genres,
     title,
     content,
     imgLink,
-    genres,
     setGenres,
-    setTitle,
     setContent,
     setImgLink,
-    handleDeletePost,
-    handleEditPost
-  } = usePostDetail();
+    setTitle,
+  } = useStore();
 
   return (
     <Modal
@@ -47,7 +50,7 @@ export const ModalEditPost: React.FC<UserDisclosureProps> = (props) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create your post</ModalHeader>
+        <ModalHeader>Edit post</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <FormControl mt={4}>
@@ -95,7 +98,10 @@ export const ModalEditPost: React.FC<UserDisclosureProps> = (props) => {
         <ModalFooter>
           <Button
             bg="tomato"
-            onClick={() => handleDeletePost()}
+            onClick={() => {
+              handleDeletePost();
+              navigate("/");
+            }}
             colorScheme="red"
             mr={3}
           >

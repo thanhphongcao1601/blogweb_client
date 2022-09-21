@@ -15,8 +15,8 @@ export function useLogin() {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("userName", response.data.userName);
           localStorage.setItem("userId", response.data.userId);
-          localStorage.setItem("email", email);
-
+          localStorage.setItem("email", response.data.email);
+          localStorage.setItem("avatarLink", response.data.avatarLink);
           navigate("/", { replace: true });
         }
       })

@@ -9,12 +9,18 @@ import {
 } from "@chakra-ui/react";
 
 import { PostCard } from "../components/PostCard";
-import { useHome } from "./Home.hooks";
 import { ModalCreatePost } from "../components/ModalCreatePost";
+import { useStore } from "../zustand/store";
+import { useEffect } from "react";
 
 function Home() {
-  const { userName, listPost } = useHome();
+  const userName = localStorage.getItem("userName");
+  const { listPost, handleGetAllPost } = useStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    handleGetAllPost();
+  }, []);
 
   return (
     <>
@@ -23,7 +29,7 @@ function Home() {
         <Flex justifyContent={"space-between"}>
           <Heading as="h2">Latest</Heading>
           {userName ? (
-            <Button border={"2px"} borderColor={"green.100"} onClick={onOpen}>
+            <Button border={"2px"} borderColor={"blue.500"} onClick={onOpen}>
               Add Post
             </Button>
           ) : null}

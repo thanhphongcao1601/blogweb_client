@@ -12,37 +12,43 @@ import {
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { ModalEditPost } from "../components/ModalEditPost";
 import { PostAuthor } from "../components/PostAuthor";
 import { PostComment } from "../components/PostComment";
 import PostTags from "../components/PostTags";
-import { usePostDetail } from "./PostDetail.hooks";
+import { useStore } from "../zustand/store";
 
 export default function PostDetail() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userId = localStorage.getItem("userId");
+  const userName = localStorage.getItem("userName");
 
   const {
     currentPost,
-    userName,
-    newComment,
-    setNewComment,
-    handleComment,
-    listComment
-  } = usePostDetail();
+    comment,
+    handleCommentPost,
+    listComment,
+    setComment,
+    handleGetPost,
+  } = useStore();
+
+  const params = useParams();
+
+  useEffect(() => {
+    handleGetPost(String(params.postId));
+  }, []);
 
   return (
     <>
-      <ModalEditPost
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-      />
+      <ModalEditPost isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       <Container maxW={"7xl"} p="12" mt={"40px"}>
         <Box w="100%">
           <Box marginX={"50px"} borderRadius="lg" overflow="hidden">
             <Link textDecoration="none" _hover={{ textDecoration: "none" }}>
               <Image
+                maxH={"50vh"}
                 width={"100%"}
                 fallbackSrc="https://via.placeholder.com/1200x300?text=No+Image"
                 transform="scale(1.0)"
@@ -90,8 +96,8 @@ export default function PostDetail() {
             <Box w="100%">
               <Textarea
                 readOnly={userName ? false : true}
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
                 placeholder={
                   userName
                     ? "Enter your comment"
@@ -101,7 +107,7 @@ export default function PostDetail() {
               <Flex>
                 <Spacer />
                 <Button
-                  onClick={handleComment}
+                  onClick={handleCommentPost}
                   alignSelf={"end"}
                   mt={"5px"}
                   justifyContent="right"

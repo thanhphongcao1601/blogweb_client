@@ -14,7 +14,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import React from "react";
-import { useHome } from "../pages/Home.hooks";
+import { useStore } from "../zustand/store";
 
 interface UserDisclosureProps {
   isOpen: boolean;
@@ -26,15 +26,15 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const {
-    setGenres,
     title,
-    setTitle,
     content,
-    setContent,
     imgLink,
+    setGenres,
+    setContent,
     setImgLink,
-    handleSubmit,
-  } = useHome();
+    setTitle,
+    handleAddPost,
+  } = useStore();
 
   return (
     <Modal
@@ -92,7 +92,7 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
 
         <ModalFooter>
           <Button
-            onClick={() => handleSubmit(props.onClose)}
+            onClick={() => handleAddPost(props.onClose)}
             colorScheme="blue"
             mr={3}
           >
