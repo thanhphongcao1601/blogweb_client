@@ -19,6 +19,7 @@ import { useSignUp } from "./SignUp.hooks";
 
 export default function SignUp() {
   const {
+    isValidEmail,
     email,
     setEmail,
     password,

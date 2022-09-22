@@ -3,16 +3,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Posts } from "../api/postRequest";
 import { Post } from "../models/Post";
+import { User } from "../models/User";
+import { useStore } from "../zustand/store";
 
 export function useNavBar() {
-  const userName = localStorage.getItem("userName");
   const { colorMode, toggleColorMode } = useColorMode();
-  
+
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [listSearch, setListSearch] = useState([] as Post[]);
+  const { setCurrentUser } = useStore();
 
   function handleLogout() {
+    setCurrentUser({} as User);
     localStorage.clear();
     navigate("/login", { replace: true });
   }
@@ -24,18 +27,13 @@ export function useNavBar() {
     }
     Posts.searchPost(searchValue)
       .then((response) => {
-        const data = response.data;
-        setListSearch((listSearch) => []);
-        data.map((post) =>
-          setListSearch((listSearch) => [...listSearch, post])
-        );
+        setListSearch(response.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }
   return {
-    userName,
     colorMode,
     toggleColorMode,
     searchValue,
@@ -44,6 +42,6 @@ export function useNavBar() {
     setListSearch,
     handleLogout,
     handleSearch,
-    navigate
+    navigate,
   };
 }

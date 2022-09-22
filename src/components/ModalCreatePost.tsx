@@ -12,8 +12,9 @@ import {
   Textarea,
   ModalFooter,
   Button,
+  Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { useStore } from "../zustand/store";
 
 interface UserDisclosureProps {
@@ -36,6 +37,8 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
     handleAddPost,
   } = useStore();
 
+  const [errMessage, setErrMessage] = useState("");
+
   return (
     <Modal
       initialFocusRef={initialRef}
@@ -47,6 +50,11 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
       <ModalContent>
         <ModalHeader>Create your post</ModalHeader>
         <ModalCloseButton />
+        {errMessage ? (
+          <Text textAlign={"center"} color={"red"}>
+            {errMessage}
+          </Text>
+        ) : null}
         <ModalBody pb={6}>
           <FormControl mt={4}>
             <FormLabel>Genres</FormLabel>
@@ -67,15 +75,19 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              ref={initialRef}
               placeholder="Title"
             />
           </FormControl>
           <FormControl mt={4}>
             <FormLabel>Content</FormLabel>
             <Textarea
+              ref={initialRef}
+              isInvalid={content ? false : true}
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => {
+                setErrMessage("");
+                setContent(e.target.value);
+              }}
               isRequired
               placeholder="Content"
             />
@@ -92,7 +104,13 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
 
         <ModalFooter>
           <Button
-            onClick={() => handleAddPost(props.onClose)}
+            onClick={() => {
+              if (!content) {
+                return setErrMessage("Content not be null");
+              } else {
+                handleAddPost(props.onClose);
+              }
+            }}
             colorScheme="blue"
             mr={3}
           >

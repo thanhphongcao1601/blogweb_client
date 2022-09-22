@@ -19,17 +19,20 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { Link as ReachLink } from "react-router-dom";
+import { useStore } from "../zustand/store";
 import { useNavBar } from "./NavBar.hooks";
 import { SearchItem } from "./SearchItem";
 
 export default function NavBar() {
+  const { currentUser } = useStore();
+  const userName = localStorage.getItem("userName");
   const {
-    userName,
     colorMode,
     toggleColorMode,
     searchValue,
     setSearchValue,
     listSearch,
+    setListSearch,
     handleLogout,
     handleSearch,
     navigate,
@@ -72,13 +75,21 @@ export default function NavBar() {
           </InputGroup>
           <Box top="60px" position="absolute" width={"50%"}>
             {listSearch.map((post) => (
-              <SearchItem
+              <Box
                 key={post._id}
-                postId={post._id || ""}
-                imgLink={post.imgLink || ""}
-                title={post.title || ""}
-                content={post.content || ""}
-              />
+                onClick={() => {
+                  setSearchValue("");
+                  setListSearch([]);
+                  navigate(`/postdetail/${post._id}`);
+                }}
+              >
+                <SearchItem
+                  postId={post._id || ""}
+                  imgLink={post.imgLink || ""}
+                  title={post.title || ""}
+                  content={post.content || ""}
+                />
+              </Box>
             ))}
           </Box>
         </Center>
@@ -96,18 +107,12 @@ export default function NavBar() {
                   cursor={"pointer"}
                   minW={0}
                 >
-                  <Avatar
-                    size={"sm"}
-                    src={"https://avatars.dicebear.com/api/male/username.svg"}
-                  />
+                  <Avatar size={"sm"} src={currentUser.avatarLink} />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
                   <br />
                   <Center>
-                    <Avatar
-                      size={"2xl"}
-                      src={"https://avatars.dicebear.com/api/male/username.svg"}
-                    />
+                    <Avatar size={"2xl"} src={currentUser.avatarLink} />
                   </Center>
                   <br />
                   <Center>
@@ -115,13 +120,13 @@ export default function NavBar() {
                   </Center>
                   <br />
                   <MenuDivider />
-                  <MenuItem>
-                    <Link as={ReachLink} to="/profile">Your Profile</Link>
-                  </MenuItem>
+                  <Link as={ReachLink} to="/profile">
+                    <MenuItem>Your Profile</MenuItem>
+                  </Link>
                   <MenuItem>Settings</MenuItem>
-                  <MenuItem>
-                    <Link onClick={handleLogout}>Logout</Link>
-                  </MenuItem>
+                  <Link onClick={handleLogout}>
+                    <MenuItem>Logout</MenuItem>
+                  </Link>
                 </MenuList>
               </Menu>
             ) : (

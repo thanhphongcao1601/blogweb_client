@@ -13,7 +13,9 @@ const authRequests = {
   post: (url: string, body: UserInput) =>
     instance.post<UserResponse>(url, body).then(responseBody),
   put: (url: string, body: UserUpdate, header?: AxiosRequestHeaders) =>
-    instance.put<UserResponse>(url, body, { headers: header }).then(responseBody),
+    instance
+      .put<UserResponse>(url, body, { headers: header })
+      .then(responseBody),
 };
 
 export interface UserInput {

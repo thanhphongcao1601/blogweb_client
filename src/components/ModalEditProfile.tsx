@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Auths, UserUpdate } from "../api/authRequest";
+import { User } from "../models/User";
 import { useStore } from "../zustand/store";
 
 interface UserDisclosureProps {
@@ -26,20 +27,19 @@ interface UserDisclosureProps {
 export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-  const email = localStorage.getItem("email") ?? "";
-  const token = localStorage.getItem("token") ?? "";
-  const userId = localStorage.getItem("userId") ?? "";
 
   const [userName, setUsername] = useState(
     localStorage.getItem("userName") ?? ""
   );
   const [avatarLink, setAvatarLink] = useState(
-    localStorage.getItem("avatarLink") ?? ""
+    localStorage.getItem("avatarLink") ?? "zzzzz"
   );
 
-  const {currentUser, setCurrentUser} = useStore();
+  const { currentUser, setCurrentUser } = useStore();
 
   function handleUpdateUser(onClose: () => void) {
+    const token = localStorage.getItem("token") ?? "";
+    const userId = localStorage.getItem("userId") ?? "";
     Auths.updateUser(
       userId,
       {
@@ -48,9 +48,17 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
       } as UserUpdate,
       { Authorization: `Bearer ${token}` }
     ).then((response) => {
-      setCurrentUser(response.data);
+      const data = response.data;
+      var newCurrentUser: User = {
+        userId: data.userId,
+        userName: data.userName,
+        token: currentUser.token,
+        email: data.email,
+        avatarLink: data.avatarLink,
+      };
+      setCurrentUser(newCurrentUser);
       localStorage.setItem("userName", response.data.userName);
-      localStorage.setItem("avatarLink", avatarLink);
+      localStorage.setItem("avatarLink", response.data.avatarLink);
       onClose();
     });
   }
@@ -81,7 +89,7 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
             <Input
               variant="filled"
               isDisabled
-              value={email || ""}
+              value={currentUser.email || ""}
               placeholder="Email"
             />
           </FormControl>
@@ -97,7 +105,7 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
           <FormControl mt={4}>
             <FormLabel>Image link</FormLabel>
             <Input
-              value={avatarLink}
+              value={avatarLink || ""}
               onChange={(e) => setAvatarLink(e.target.value)}
               placeholder="Image link"
             />

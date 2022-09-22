@@ -15,7 +15,7 @@ import { useEffect } from "react";
 
 function Home() {
   const userName = localStorage.getItem("userName");
-  const { listPost, handleGetAllPost } = useStore();
+  const { listPost, handleGetAllPost, clearPostForm } = useStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -29,7 +29,14 @@ function Home() {
         <Flex justifyContent={"space-between"}>
           <Heading as="h2">Latest</Heading>
           {userName ? (
-            <Button border={"2px"} borderColor={"blue.500"} onClick={onOpen}>
+            <Button
+              border={"2px"}
+              borderColor={"blue.500"}
+              onClick={() => {
+                clearPostForm();
+                onOpen();
+              }}
+            >
               Add Post
             </Button>
           ) : null}

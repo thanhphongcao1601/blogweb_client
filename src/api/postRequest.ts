@@ -52,8 +52,10 @@ export const Posts = {
     header?: AxiosRequestHeaders
   ): Promise<PostResponse> =>
     postRequests.put(`/posts/${postId}`, newPost, header),
-  deletePost: (postId: string, header: AxiosRequestHeaders): Promise<PostResponse> =>
-    postRequests.delete(`/posts/${postId}`,header),
+  deletePost: (
+    postId: string,
+    header: AxiosRequestHeaders
+  ): Promise<PostResponse> => postRequests.delete(`/posts/${postId}`, header),
   commentPost: (
     postId: string,
     fields: { content: string },
@@ -65,5 +67,7 @@ export const Posts = {
   filterPost: (genre: string): Promise<PostsResponse> =>
     searchRequest.post(`/posts/filter`, { genres: [genre] } as Post),
   getPostByAuthorId: (authorId: string): Promise<PostsResponse> =>
-    searchRequest.post(`/posts/userPost`, { author: { _id: authorId } } as Post),
+    searchRequest.post(`/posts/userPost`, {
+      author: { _id: authorId },
+    } as Post),
 };

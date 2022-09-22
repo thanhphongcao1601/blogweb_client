@@ -17,23 +17,29 @@ import { PostCard } from "../components/PostCard";
 import { EditIcon } from "@chakra-ui/icons";
 import { ModalEditProfile } from "../components/ModalEditProfile";
 import { useStore } from "../zustand/store";
+import { useEffect } from "react";
 
 export default function Profile() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentUser, listUserPost } = useStore();
+  const { currentUser, listUserPost, handleGetPostByAuthorId } = useStore();
+
+  useEffect(() => {
+    handleGetPostByAuthorId();
+  }, []);
 
   return (
     <>
       <ModalEditProfile isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
-      <Container maxW={"7xl"} bg={"tomato"} p={0}>
+      <Container maxW={"7xl"} p={0}>
         <Box
           mt="60px"
           bg={useColorModeValue("white", "gray.800")}
           boxShadow={"2xl"}
           rounded={"md"}
           overflow={"hidden"}
+          position="relative"
         >
-          <Box top="0" right="-2" position={"absolute"}>
+          <Box position={"absolute"} top="0" right="-1" zIndex="100">
             <Button onClick={onOpen}>
               Edit
               <EditIcon ml={"10px"} />
@@ -65,7 +71,7 @@ export default function Profile() {
             </Stack>
           </Box>
           {listUserPost.length > 0 ? (
-            <Wrap px={6} spacing="30px" marginTop="5">
+            <Wrap px={6} py={6} spacing="30px" marginTop="5">
               {listUserPost.reverse().map((post) => (
                 <PostCard
                   postId={post._id || ""}

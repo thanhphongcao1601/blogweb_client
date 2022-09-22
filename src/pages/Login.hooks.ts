@@ -1,22 +1,40 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auths } from "../api/authRequest";
+import { useStore } from "../zustand/store";
+import { User } from "../models/User";
 
 export function useLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errMessage, setErrMessage] = useState("");
+  const { setCurrentUser } = useStore();
 
   let navigate = useNavigate();
   function handleLogin() {
     Auths.login({ email: email, password: password })
       .then((response) => {
         if (response.status === "success") {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("userName", response.data.userName);
-          localStorage.setItem("userId", response.data.userId);
-          localStorage.setItem("email", response.data.email);
-          localStorage.setItem("avatarLink", response.data.avatarLink);
+          const data = response.data;
+          console.log(data);
+
+          localStorage.clear();
+
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userName", data.userName);
+          localStorage.setItem("userId", data.userId);
+          localStorage.setItem("email", data.email);
+          localStorage.setItem("avatarLink", data.avatarLink);
+
+          var loggedInUser: User = {
+            userName: data.userName,
+            userId: data.userId,
+            token: data.token,
+            email: data.email,
+            avatarLink: data.avatarLink,
+          };
+
+          setCurrentUser(loggedInUser);
           navigate("/", { replace: true });
         }
       })

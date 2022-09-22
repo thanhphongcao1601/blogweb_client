@@ -4,12 +4,6 @@ import { Post } from "../models/Post";
 import { PostComment } from "../models/PostComment";
 import { User } from "../models/User";
 
-const userName = localStorage.getItem("userName") ?? "";
-const token = localStorage.getItem("token") ?? "";
-const userId = localStorage.getItem("UserId") ?? "";
-const avatarLink = localStorage.getItem("avatarLink") ?? "";
-const email = localStorage.getItem("email") ?? "";
-
 type State = {
   listUserPost: Post[];
   setListUserPost: (listUserPost: Post[]) => void;
@@ -41,18 +35,13 @@ type State = {
   handleCommentPost: () => void;
   handleEditPost: (onClose: () => void) => void;
   handleGetPostByAuthorId: () => void;
+  clearPostForm: () => void;
 };
 
 export const useStore = create<State>((set, get) => ({
   listUserPost: [],
   setListUserPost: (listUserPost) => set({ listUserPost }),
-  currentUser: {
-    userName: userName,
-    userId: userId,
-    token: token,
-    email: email,
-    avatarLink: avatarLink,
-  },
+  currentUser: {} as User,
   setCurrentUser: (currentUser) => set({ currentUser }),
   comment: "",
   setComment: (comment) => set({ comment }),
@@ -77,6 +66,9 @@ export const useStore = create<State>((set, get) => ({
     set({ listSearch: await response.data });
   },
   handleAddPost: async (onClose) => {
+    const userName = localStorage.getItem("userName") ?? "";
+    const token = localStorage.getItem("token") ?? "";
+    console.log(userName);
     let newPost: Post = {
       genres: get().genres.length > 0 ? get().genres : ["other"],
       imgLink: get().imgLink,
@@ -87,6 +79,7 @@ export const useStore = create<State>((set, get) => ({
     const response = await Posts.addPost(newPost, {
       authorization: `Bearer ${token}`,
     });
+    console.log(response);
     set((state) => ({ listPost: [...state.listPost, response.data] }));
     //empty form
     set({
@@ -114,11 +107,14 @@ export const useStore = create<State>((set, get) => ({
     });
   },
   handleDeletePost: async () => {
+    const token = localStorage.getItem("token") ?? "";
     await Posts.deletePost(get().currentPost._id!, {
       Authorization: `Bearer ${token}`,
     });
   },
   handleCommentPost: async () => {
+    const userName = localStorage.getItem("userName") ?? "";
+    const token = localStorage.getItem("token") ?? "";
     if (!userName) {
       return;
     }
@@ -134,6 +130,7 @@ export const useStore = create<State>((set, get) => ({
     set({ comment: "", listComment: response.data.comments });
   },
   handleEditPost: async (onClose: () => void) => {
+    const token = localStorage.getItem("token") ?? "";
     console.log(get().currentPost);
     let newPost: Post = {
       genres: get().genres,
@@ -152,7 +149,17 @@ export const useStore = create<State>((set, get) => ({
     console.log(response.data);
   },
   handleGetPostByAuthorId: async () => {
+    const userId = localStorage.getItem("userId") ?? "";
+    console.log(userId);
     const response = await Posts.getPostByAuthorId(userId);
     set({ listUserPost: response.data });
+  },
+  clearPostForm: () => {
+    set({
+      title: "",
+      content: "",
+      imgLink: "",
+      genres: ["other"],
+    });
   },
 }));

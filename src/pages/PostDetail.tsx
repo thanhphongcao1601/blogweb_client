@@ -13,8 +13,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ModalEditPost } from "../components/ModalEditPost";
+import { useNavBar } from "../components/NavBar.hooks";
 import { PostAuthor } from "../components/PostAuthor";
 import { PostComment } from "../components/PostComment";
 import PostTags from "../components/PostTags";
@@ -24,6 +25,7 @@ export default function PostDetail() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
+  const navigate = useNavigate();
 
   const {
     currentPost,
@@ -38,7 +40,7 @@ export default function PostDetail() {
 
   useEffect(() => {
     handleGetPost(String(params.postId));
-  }, []);
+  }, [params.postId]);
 
   return (
     <>
@@ -99,21 +101,32 @@ export default function PostDetail() {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder={
-                  userName
-                    ? "Enter your comment"
-                    : "You have to login to comment"
+                  userName ? "Enter your comment" : "You must login to comment"
                 }
               ></Textarea>
               <Flex>
                 <Spacer />
-                <Button
-                  onClick={handleCommentPost}
-                  alignSelf={"end"}
-                  mt={"5px"}
-                  justifyContent="right"
-                >
-                  {userName ? "Comment" : "Login now"}
-                </Button>
+                {userName ? (
+                  <Button
+                    onClick={handleCommentPost}
+                    alignSelf={"end"}
+                    mt={"5px"}
+                    justifyContent="right"
+                  >
+                    Comment
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      navigate("/login");
+                    }}
+                    alignSelf={"end"}
+                    mt={"5px"}
+                    justifyContent="right"
+                  >
+                    Login Now
+                  </Button>
+                )}
               </Flex>
             </Box>
           </HStack>
