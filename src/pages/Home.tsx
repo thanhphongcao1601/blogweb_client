@@ -6,6 +6,7 @@ import {
   Button,
   Flex,
   useDisclosure,
+  Spinner,
 } from "@chakra-ui/react";
 
 import { PostCard } from "../components/PostCard";
@@ -46,6 +47,7 @@ function Home() {
           {listPost
             .slice(0)
             .reverse()
+            .slice(0, 15)
             .map((post) => (
               <PostCard
                 postId={post._id || ""}
@@ -56,6 +58,7 @@ function Home() {
                 genres={[...post.genres] ?? ["unknown"]}
                 author={post.author?.name || ""}
                 date={new Date(post.createdAt || "")}
+                avatarLink={post.author?.avatarLink || ""}
               />
             ))}
         </Wrap>

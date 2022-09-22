@@ -1,27 +1,37 @@
-import axios, { AxiosRequestHeaders, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { AppSettings } from "../helper/constant";
 import { Post } from "../models/Post";
 
 const instance = axios.create({
   baseURL: AppSettings.BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
   timeout: 15000,
+});
+
+instance.interceptors.request.use(async (config) => {
+  let token = localStorage.getItem("token");
+  if (token) {
+    localStorage.setItem("token", token);
+    config.headers!.Authorization = "Bearer " + token;
+  }
+  return config;
 });
 
 const responseBody = (response: AxiosResponse) => response.data;
 
 const postRequests = {
   get: (url: string) => instance.get<Post>(url).then(responseBody),
-  post: (url: string, body: Post, header?: AxiosRequestHeaders) =>
-    instance.post<Post>(url, body, { headers: header }).then(responseBody),
-  delete: (url: string, header: AxiosRequestHeaders) =>
-    instance.delete<Post>(url, { headers: header }).then(responseBody),
-  put: (url: string, body: Post, header?: AxiosRequestHeaders) =>
-    instance.put<Post>(url, body, { headers: header }).then(responseBody),
+  post: (url: string, body: Post) =>
+    instance.post<Post>(url, body).then(responseBody),
+  delete: (url: string) => instance.delete<Post>(url).then(responseBody),
+  put: (url: string, body: Post) =>
+    instance.put<Post>(url, body).then(responseBody),
   patch: (
     url: string,
-    body: { content: string },
-    header?: AxiosRequestHeaders
-  ) => instance.patch<Post>(url, body, { headers: header }).then(responseBody),
+    body: { content: string }
+  ) => instance.patch<Post>(url, body).then(responseBody),
 };
 
 const searchRequest = {
@@ -44,24 +54,21 @@ export const Posts = {
   getAllPosts: (): Promise<PostsResponse> => postRequests.get("/posts"),
   getPost: (postId: string): Promise<PostResponse> =>
     postRequests.get(`/posts/${postId}`),
-  addPost: (post: Post, header?: AxiosRequestHeaders): Promise<PostResponse> =>
-    postRequests.post(`/posts`, post, header),
+  addPost: (post: Post): Promise<PostResponse> =>
+    postRequests.post(`/posts`, post),
   updatePost: (
     postId: string,
     newPost: Post,
-    header?: AxiosRequestHeaders
   ): Promise<PostResponse> =>
-    postRequests.put(`/posts/${postId}`, newPost, header),
+    postRequests.put(`/posts/${postId}`, newPost),
   deletePost: (
     postId: string,
-    header: AxiosRequestHeaders
-  ): Promise<PostResponse> => postRequests.delete(`/posts/${postId}`, header),
+  ): Promise<PostResponse> => postRequests.delete(`/posts/${postId}`),
   commentPost: (
     postId: string,
     fields: { content: string },
-    header: AxiosRequestHeaders
   ): Promise<PostResponse> =>
-    postRequests.patch(`/posts/${postId}`, fields, header),
+    postRequests.patch(`/posts/${postId}`, fields),
   searchPost: (title: string): Promise<PostsResponse> =>
     searchRequest.post(`/posts/search`, { title: title } as Post),
   filterPost: (genre: string): Promise<PostsResponse> =>

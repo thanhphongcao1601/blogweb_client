@@ -74,23 +74,26 @@ export default function NavBar() {
             </InputRightElement>
           </InputGroup>
           <Box top="60px" position="absolute" width={"50%"}>
-            {listSearch.map((post) => (
-              <Box
-                key={post._id}
-                onClick={() => {
-                  setSearchValue("");
-                  setListSearch([]);
-                  navigate(`/postdetail/${post._id}`);
-                }}
-              >
-                <SearchItem
-                  postId={post._id || ""}
-                  imgLink={post.imgLink || ""}
-                  title={post.title || ""}
-                  content={post.content || ""}
-                />
-              </Box>
-            ))}
+            {listSearch
+              .slice(0, 5)
+              .reverse()
+              .map((post) => (
+                <Box
+                  key={post._id}
+                  onClick={() => {
+                    setSearchValue("");
+                    setListSearch([]);
+                    navigate(`/postdetail/${post._id}`);
+                  }}
+                >
+                  <SearchItem
+                    postId={post._id || ""}
+                    imgLink={post.imgLink || ""}
+                    title={post.title || ""}
+                    content={post.content || ""}
+                  />
+                </Box>
+              ))}
           </Box>
         </Center>
         <Flex alignItems={"center"}>

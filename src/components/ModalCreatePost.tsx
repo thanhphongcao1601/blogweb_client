@@ -13,6 +13,10 @@ import {
   ModalFooter,
   Button,
   Text,
+  Spinner,
+  Box,
+  Center,
+  Flex,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useStore } from "../zustand/store";
@@ -26,6 +30,8 @@ interface UserDisclosureProps {
 export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     title,
     content,
@@ -48,6 +54,24 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
     >
       <ModalOverlay />
       <ModalContent>
+        <Flex
+          zIndex={3}
+          display={isLoading ? "flex" : "none"}
+          height={"100%"}
+          width="100%"
+          bg="whiteAlpha.400"
+          position={"absolute"}
+          justifyContent="center"
+          alignItems={"center"}
+        >
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="lg"
+          />
+        </Flex>
         <ModalHeader>Create your post</ModalHeader>
         <ModalCloseButton />
         {errMessage ? (
@@ -108,7 +132,17 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
               if (!content) {
                 return setErrMessage("Content not be null");
               } else {
-                handleAddPost(props.onClose);
+                setIsLoading(true);
+
+                //example waiting 1s
+                setTimeout(() => {
+                  handleAddPost(props.onClose);
+                }, 1000);
+
+                //auto turn off loading after 3s
+                setTimeout(() => {
+                  setIsLoading(false);
+                }, 3000);
               }
             }}
             colorScheme="blue"

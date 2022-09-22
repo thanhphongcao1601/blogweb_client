@@ -49,6 +49,7 @@ function Filter() {
               genres={post.genres.length > 0 ? [...post.genres] : ["unknown"]}
               author={post.author?.name || ""}
               date={new Date(post.createdAt || "")}
+              avatarLink={post.author?.avatarLink || ""}
             />
           ))}
         </Wrap>

@@ -67,7 +67,6 @@ export const useStore = create<State>((set, get) => ({
   },
   handleAddPost: async (onClose) => {
     const userName = localStorage.getItem("userName") ?? "";
-    const token = localStorage.getItem("token") ?? "";
     console.log(userName);
     let newPost: Post = {
       genres: get().genres.length > 0 ? get().genres : ["other"],
@@ -76,9 +75,7 @@ export const useStore = create<State>((set, get) => ({
       content: get().content,
     };
 
-    const response = await Posts.addPost(newPost, {
-      authorization: `Bearer ${token}`,
-    });
+    const response = await Posts.addPost(newPost);
     console.log(response);
     set((state) => ({ listPost: [...state.listPost, response.data] }));
     //empty form
@@ -107,14 +104,10 @@ export const useStore = create<State>((set, get) => ({
     });
   },
   handleDeletePost: async () => {
-    const token = localStorage.getItem("token") ?? "";
-    await Posts.deletePost(get().currentPost._id!, {
-      Authorization: `Bearer ${token}`,
-    });
+    await Posts.deletePost(get().currentPost._id!);
   },
   handleCommentPost: async () => {
     const userName = localStorage.getItem("userName") ?? "";
-    const token = localStorage.getItem("token") ?? "";
     if (!userName) {
       return;
     }
@@ -122,15 +115,12 @@ export const useStore = create<State>((set, get) => ({
     //check empty comment
     if (get().comment.trim() === "") return set({ comment: "" });
 
-    const response = await Posts.commentPost(
-      get().currentPost._id!,
-      { content: get().comment },
-      { Authorization: `Bearer ${token}` }
-    );
+    const response = await Posts.commentPost(get().currentPost._id!, {
+      content: get().comment,
+    });
     set({ comment: "", listComment: response.data.comments });
   },
   handleEditPost: async (onClose: () => void) => {
-    const token = localStorage.getItem("token") ?? "";
     console.log(get().currentPost);
     let newPost: Post = {
       genres: get().genres,
@@ -139,11 +129,9 @@ export const useStore = create<State>((set, get) => ({
       content: get().content,
     };
 
-    const response = await Posts.updatePost(
-      get().currentPost._id!,
-      { ...newPost },
-      { Authorization: `Bearer ${token}` }
-    );
+    const response = await Posts.updatePost(get().currentPost._id!, {
+      ...newPost,
+    });
     set({ currentPost: response.data });
     onClose();
     console.log(response.data);

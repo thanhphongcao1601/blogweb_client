@@ -38,15 +38,13 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
   const { currentUser, setCurrentUser } = useStore();
 
   function handleUpdateUser(onClose: () => void) {
-    const token = localStorage.getItem("token") ?? "";
     const userId = localStorage.getItem("userId") ?? "";
     Auths.updateUser(
       userId,
       {
         name: userName,
         avatarLink: avatarLink,
-      } as UserUpdate,
-      { Authorization: `Bearer ${token}` }
+      } as UserUpdate
     ).then((response) => {
       const data = response.data;
       var newCurrentUser: User = {

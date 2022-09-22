@@ -1,19 +1,15 @@
-import { HStack, Image, Text } from "@chakra-ui/react";
+import { Avatar, HStack, Image, Text } from "@chakra-ui/react";
 
 interface PostAuthorProps {
   date: Date;
   name: string;
+  avatarLink: string;
 }
 
 export const PostAuthor: React.FC<PostAuthorProps> = (props) => {
   return (
     <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
-      <Image
-        borderRadius="full"
-        boxSize="40px"
-        src="https://avatars.dicebear.com/api/male/username.svg"
-        alt={`Avatar of ${props.name}`}
-      />
+      <Avatar borderRadius="full" boxSize="40px" src={props.avatarLink || ""} />
       <Text fontWeight="medium">{props.name}</Text>
       <Text>—</Text>
       <Text>{props.date.toLocaleDateString()}</Text>

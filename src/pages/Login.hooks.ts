@@ -10,7 +10,8 @@ export function useLogin() {
   const [errMessage, setErrMessage] = useState("");
   const { setCurrentUser } = useStore();
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  
   function handleLogin() {
     Auths.login({ email: email, password: password })
       .then((response) => {

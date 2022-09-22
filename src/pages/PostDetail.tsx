@@ -15,7 +15,6 @@ import {
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ModalEditPost } from "../components/ModalEditPost";
-import { useNavBar } from "../components/NavBar.hooks";
 import { PostAuthor } from "../components/PostAuthor";
 import { PostComment } from "../components/PostComment";
 import PostTags from "../components/PostTags";
@@ -65,6 +64,7 @@ export default function PostDetail() {
             <PostAuthor
               name={currentPost.author?.name || ""}
               date={new Date(currentPost.createdAt || "")}
+              avatarLink={currentPost.author?.avatarLink || ""}
             />
             {currentPost.author?._id === userId ? (
               <Button mt={4} onClick={onOpen}>

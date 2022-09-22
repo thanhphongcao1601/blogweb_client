@@ -1,9 +1,21 @@
-import axios, { AxiosRequestHeaders, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { AppSettings } from "../helper/constant";
 
 const instance = axios.create({
   baseURL: AppSettings.BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
   timeout: 15000,
+});
+
+instance.interceptors.request.use(async (config) => {
+  let token = localStorage.getItem("token");
+  if (token) {
+    localStorage.setItem("token", token);
+    config.headers!.Authorization = "Bearer " + token;
+  }
+  return config;
 });
 
 const responseBody = (response: AxiosResponse) => response.data;
@@ -12,10 +24,8 @@ const authRequests = {
   get: (url: string) => instance.get<UserResponse>(url).then(responseBody),
   post: (url: string, body: UserInput) =>
     instance.post<UserResponse>(url, body).then(responseBody),
-  put: (url: string, body: UserUpdate, header?: AxiosRequestHeaders) =>
-    instance
-      .put<UserResponse>(url, body, { headers: header })
-      .then(responseBody),
+  put: (url: string, body: UserUpdate) =>
+    instance.put<UserResponse>(url, body).then(responseBody),
 };
 
 export interface UserInput {
@@ -45,14 +55,9 @@ export const Auths = {
     authRequests.post(AppSettings.LOGIN_URL, userInput),
   register: (userInput: UserInput): Promise<UserResponse> =>
     authRequests.post(AppSettings.REGISTER_URL, userInput),
-  updateUser: (
-    userId: string,
-    userUpdate: UserUpdate,
-    header?: AxiosRequestHeaders
-  ): Promise<UserResponse> =>
+  updateUser: (userId: string, userUpdate: UserUpdate): Promise<UserResponse> =>
     authRequests.put(
       AppSettings.BASE_URL + `/auth/update/${userId}`,
-      userUpdate,
-      header
+      userUpdate
     ),
 };

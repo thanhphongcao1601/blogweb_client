@@ -1,5 +1,5 @@
 import { useColorMode } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Posts } from "../api/postRequest";
 import { Post } from "../models/Post";
@@ -13,6 +13,15 @@ export function useNavBar() {
   const [searchValue, setSearchValue] = useState("");
   const [listSearch, setListSearch] = useState([] as Post[]);
   const { setCurrentUser } = useStore();
+
+  useEffect(() => {
+    setCurrentUser({
+      userName: localStorage.getItem("userName") ?? "",
+      avatarLink: localStorage.getItem("avatarLink") ?? "",
+      email: localStorage.getItem("email") ?? "",
+      userId: localStorage.getItem("userId") ?? "",
+    } as User);
+  }, []);
 
   function handleLogout() {
     setCurrentUser({} as User);

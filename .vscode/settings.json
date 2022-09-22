@@ -1,5 +1,12 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "cSpell.words": ["Auths", "chakra", "zustand"]
+  "cSpell.words": [
+    "Auths",
+    "chakra",
+    "Parens",
+    "postdetail",
+    "signup",
+    "zustand"
+  ]
 }

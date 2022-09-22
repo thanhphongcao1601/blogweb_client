@@ -11,6 +11,7 @@ interface PostCardProps {
   genres: Array<string>;
   author: string;
   date: Date;
+  avatarLink: string;
 }
 
 export const PostCard: React.FC<PostCardProps> = (props) => {
@@ -48,7 +49,7 @@ export const PostCard: React.FC<PostCardProps> = (props) => {
         <Text as="p" fontSize="md" marginTop="2" noOfLines={[1, 5]}>
           {props.content}
         </Text>
-        <PostAuthor name={props.author} date={props.date} />
+        <PostAuthor name={props.author} date={props.date} avatarLink={props.avatarLink} />
       </Box>
     </WrapItem>
   );
