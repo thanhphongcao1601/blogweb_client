@@ -8,11 +8,10 @@ import { useStore } from "../zustand/store";
 
 export function useNavBar() {
   const { colorMode, toggleColorMode } = useColorMode();
-
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [listSearch, setListSearch] = useState([] as Post[]);
-  const { setCurrentUser } = useStore();
+  const { setCurrentUser, currentUser } = useStore();
 
   useEffect(() => {
     setCurrentUser({
@@ -22,6 +21,7 @@ export function useNavBar() {
       userId: localStorage.getItem("userId") ?? "",
     } as User);
   }, []);
+
 
   function handleLogout() {
     setCurrentUser({} as User);
@@ -51,6 +51,7 @@ export function useNavBar() {
     setListSearch,
     handleLogout,
     handleSearch,
-    navigate,
+    setCurrentUser,
+    currentUser,
   };
 }

@@ -17,15 +17,18 @@ import {
   MenuDivider,
   MenuItem,
   Link,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { Link as ReachLink } from "react-router-dom";
-import { useStore } from "../zustand/store";
+import { Link as ReachLink, useNavigate } from "react-router-dom";
+import { ModalChangePassword } from "./ModalChangePassword";
 import { useNavBar } from "./NavBar.hooks";
 import { SearchItem } from "./SearchItem";
 
 export default function NavBar() {
-  const { currentUser } = useStore();
   const userName = localStorage.getItem("userName");
+  const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const {
     colorMode,
     toggleColorMode,
@@ -35,7 +38,7 @@ export default function NavBar() {
     setListSearch,
     handleLogout,
     handleSearch,
-    navigate,
+    currentUser,
   } = useNavBar();
 
   return (
@@ -47,6 +50,7 @@ export default function NavBar() {
       top="0px"
       w={"100%"}
     >
+      <ModalChangePassword isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         <Box>
           <Link as={ReachLink} to="/">
@@ -123,13 +127,11 @@ export default function NavBar() {
                   </Center>
                   <br />
                   <MenuDivider />
-                  <Link as={ReachLink} to="/profile">
-                    <MenuItem>Your Profile</MenuItem>
-                  </Link>
-                  <MenuItem>Settings</MenuItem>
-                  <Link onClick={handleLogout}>
-                    <MenuItem>Logout</MenuItem>
-                  </Link>
+                  <MenuItem onClick={() => navigate("/profile")}>
+                    Your Profile
+                  </MenuItem>
+                  <MenuItem onClick={onOpen}>Change Password</MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </MenuList>
               </Menu>
             ) : (

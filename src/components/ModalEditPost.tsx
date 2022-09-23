@@ -12,6 +12,8 @@ import {
   Textarea,
   ModalFooter,
   Button,
+  Flex,
+  Spinner,
 } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +41,7 @@ export const ModalEditPost: React.FC<UserDisclosureProps> = (props) => {
     setContent,
     setImgLink,
     setTitle,
+    isLoading,
   } = useStore();
 
   return (
@@ -50,6 +53,24 @@ export const ModalEditPost: React.FC<UserDisclosureProps> = (props) => {
     >
       <ModalOverlay />
       <ModalContent>
+        <Flex
+          zIndex={3}
+          display={isLoading ? "flex" : "none"}
+          height={"100%"}
+          width="100%"
+          bg="whiteAlpha.400"
+          position={"absolute"}
+          justifyContent="center"
+          alignItems={"center"}
+        >
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="lg"
+          />
+        </Flex>
         <ModalHeader>Edit post</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
@@ -99,8 +120,7 @@ export const ModalEditPost: React.FC<UserDisclosureProps> = (props) => {
           <Button
             bg="tomato"
             onClick={() => {
-              handleDeletePost();
-              navigate("/");
+              handleDeletePost(() => navigate("/"));
             }}
             colorScheme="red"
             mr={3}

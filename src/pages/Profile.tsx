@@ -77,6 +77,7 @@ export default function Profile() {
                 .reverse()
                 .map((post) => (
                   <PostCard
+                    showDetail={false}
                     postId={post._id || ""}
                     key={post._id}
                     imgLink={post.imgLink || ""}

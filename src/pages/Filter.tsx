@@ -41,6 +41,7 @@ function Filter() {
         <Wrap spacing="30px" marginTop="5">
           {listSearch.reverse().map((post) => (
             <PostCard
+              showDetail={true}
               postId={post._id || ""}
               key={post._id}
               imgLink={post.imgLink || ""}

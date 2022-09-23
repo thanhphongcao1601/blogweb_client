@@ -9,6 +9,7 @@ import {
   Link,
   Stack,
   Image,
+  Spinner,
 } from "@chakra-ui/react";
 import { Link as ReachLink } from "react-router-dom";
 import { useLogin } from "./Login.hooks";
@@ -22,7 +23,9 @@ export default function Login() {
     password,
     setPassword,
     handleLogin,
+    isLoading,
   } = useLogin();
+
   return (
     <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
@@ -56,7 +59,17 @@ export default function Login() {
             />
           </FormControl>
           <Button colorScheme={"blue"} variant={"solid"} onClick={handleLogin}>
-            Sign in
+            {isLoading ? (
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="lg"
+              />
+            ) : (
+              "Sign in"
+            )}
           </Button>
           <Text align={"center"}>
             Don't have an account?

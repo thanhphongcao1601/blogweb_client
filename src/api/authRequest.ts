@@ -37,6 +37,8 @@ export interface UserInput {
 export interface UserUpdate {
   name?: string;
   imgLink?: string;
+  password?: string;
+  newPassword?: string;
 }
 
 export interface UserResponse {
@@ -60,4 +62,6 @@ export const Auths = {
       AppSettings.BASE_URL + `/auth/update/${userId}`,
       userUpdate
     ),
+  changePassword: (userUpdate: UserUpdate): Promise<UserResponse> =>
+    authRequests.put(AppSettings.BASE_URL + "/auth/changePassword", userUpdate),
 };

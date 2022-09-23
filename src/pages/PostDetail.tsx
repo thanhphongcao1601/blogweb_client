@@ -11,6 +11,8 @@ import {
   Flex,
   Spacer,
   useDisclosure,
+  Spinner,
+  Avatar,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,6 +26,7 @@ export default function PostDetail() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
+  const avatarLink = localStorage.getItem("avatarLink") ?? "";
   const navigate = useNavigate();
 
   const {
@@ -33,6 +36,7 @@ export default function PostDetail() {
     listComment,
     setComment,
     handleGetPost,
+    isLoading,
   } = useStore();
 
   const params = useParams();
@@ -89,12 +93,7 @@ export default function PostDetail() {
             {currentPost.content || "ddddd"}
           </Text>
           <HStack alignItems={"flex-start"} mt="30px">
-            <Image
-              borderRadius="full"
-              boxSize="50px"
-              src="https://avatars.dicebear.com/api/male/username.svg"
-              alt={`Avatar`}
-            />
+            <Avatar borderRadius="full" boxSize="50px" src={avatarLink} />
             <Box w="100%">
               <Textarea
                 readOnly={userName ? false : true}
@@ -113,7 +112,17 @@ export default function PostDetail() {
                     mt={"5px"}
                     justifyContent="right"
                   >
-                    Comment
+                    {!isLoading ? (
+                      "Comment"
+                    ) : (
+                      <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="blue.500"
+                        size="lg"
+                      />
+                    )}
                   </Button>
                 ) : (
                   <Button
@@ -139,6 +148,7 @@ export default function PostDetail() {
                 name={comment.author.name}
                 date={new Date(comment.createdAt ?? "")}
                 comment={comment.content}
+                avatarLink={comment.author.avatarLink}
               />
             ))}
         </Box>

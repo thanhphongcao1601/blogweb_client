@@ -12,6 +12,7 @@ import {
   Text,
   useColorModeValue,
   Link,
+  Spinner,
 } from "@chakra-ui/react";
 import { Link as ReachLink } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -19,7 +20,6 @@ import { useSignUp } from "./SignUp.hooks";
 
 export default function SignUp() {
   const {
-    isValidEmail,
     email,
     setEmail,
     password,
@@ -30,7 +30,8 @@ export default function SignUp() {
     setShowPassword,
     errMessage,
     setErrMessage,
-    handleSignUp
+    handleSignUp,
+    isLoading
   } = useSignUp();
 
   return (
@@ -117,7 +118,17 @@ export default function SignUp() {
                   bg: "blue.500",
                 }}
               >
-                Sign up
+                {isLoading ? (
+                  <Spinner
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="lg"
+                  />
+                ) : (
+                  "Sign up"
+                )}
               </Button>
             </Stack>
             <Stack pt={6}>

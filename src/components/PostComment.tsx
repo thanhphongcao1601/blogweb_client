@@ -1,20 +1,16 @@
-import { Box, HStack, Image, Text } from "@chakra-ui/react";
+import { Avatar, Box, HStack, Text } from "@chakra-ui/react";
 
 interface PostCommentProps {
   date: Date;
   name: string;
   comment: string;
+  avatarLink: string;
 }
 
 export const PostComment: React.FC<PostCommentProps> = (props) => {
   return (
     <HStack alignItems={"flex-start"} mt="10px">
-      <Image
-        borderRadius="full"
-        boxSize="50px"
-        src="https://avatars.dicebear.com/api/male/username.svg"
-        alt={`Avatar of ${props.name}`}
-      />
+      <Avatar borderRadius="full" boxSize="50px" src={props.avatarLink} />
       <Box w="100%">
         <Text fontWeight="medium">{props.name}</Text>
         <Text as="i" fontSize={"12px"}>

@@ -14,8 +14,6 @@ import {
   Button,
   Text,
   Spinner,
-  Box,
-  Center,
   Flex,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
@@ -30,7 +28,6 @@ interface UserDisclosureProps {
 export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     title,
@@ -41,6 +38,7 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
     setImgLink,
     setTitle,
     handleAddPost,
+    isLoading,
   } = useStore();
 
   const [errMessage, setErrMessage] = useState("");
@@ -132,17 +130,7 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
               if (!content) {
                 return setErrMessage("Content not be null");
               } else {
-                setIsLoading(true);
-
-                //example waiting 1s
-                setTimeout(() => {
-                  handleAddPost(props.onClose);
-                }, 1000);
-
-                //auto turn off loading after 3s
-                setTimeout(() => {
-                  setIsLoading(false);
-                }, 3000);
+                handleAddPost(props.onClose);
               }
             }}
             colorScheme="blue"

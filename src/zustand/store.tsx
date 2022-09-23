@@ -5,6 +5,8 @@ import { PostComment } from "../models/PostComment";
 import { User } from "../models/User";
 
 type State = {
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
   listUserPost: Post[];
   setListUserPost: (listUserPost: Post[]) => void;
   currentUser: User;
@@ -31,7 +33,7 @@ type State = {
   handleAddPost: (onClose: () => void) => void;
   handleGetAllPost: () => void;
   handleGetPost: (postId: string) => void;
-  handleDeletePost: () => void;
+  handleDeletePost: (navigate: () => void) => void;
   handleCommentPost: () => void;
   handleEditPost: (onClose: () => void) => void;
   handleGetPostByAuthorId: () => void;
@@ -39,6 +41,8 @@ type State = {
 };
 
 export const useStore = create<State>((set, get) => ({
+  isLoading: false,
+  setIsLoading: (isLoading) => set({ isLoading }),
   listUserPost: [],
   setListUserPost: (listUserPost) => set({ listUserPost }),
   currentUser: {} as User,
@@ -66,6 +70,7 @@ export const useStore = create<State>((set, get) => ({
     set({ listSearch: await response.data });
   },
   handleAddPost: async (onClose) => {
+    set({ isLoading: true });
     const userName = localStorage.getItem("userName") ?? "";
     console.log(userName);
     let newPost: Post = {
@@ -74,18 +79,33 @@ export const useStore = create<State>((set, get) => ({
       title: get().title,
       content: get().content,
     };
-
-    const response = await Posts.addPost(newPost);
-    console.log(response);
-    set((state) => ({ listPost: [...state.listPost, response.data] }));
-    //empty form
-    set({
-      content: "",
-      title: "",
-      imgLink: "",
-      genres: ["other"],
-    });
-    onClose();
+    try {
+      const response = await Posts.addPost(newPost);
+      //api request delay "chay bang com"
+      setTimeout(function () {
+        if (response) {
+          set({ isLoading: false });
+          console.log(response);
+          set((state) => ({ listPost: [...state.listPost, response.data] }));
+          //empty form
+          set({
+            content: "",
+            title: "",
+            imgLink: "",
+            genres: ["other"],
+          });
+          onClose();
+          setTimeout(() => {
+            alert("Add post success");
+          }, 200);
+        }
+      }, 1000);
+    } catch (error) {
+      set({ isLoading: false });
+      setTimeout(() => {
+        alert("Add post fail: " + error);
+      }, 200);
+    }
   },
   handleGetAllPost: async () => {
     const response = await Posts.getAllPosts();
@@ -103,11 +123,26 @@ export const useStore = create<State>((set, get) => ({
       listComment: data.comments,
     });
   },
-  handleDeletePost: async () => {
-    await Posts.deletePost(get().currentPost._id!);
+  handleDeletePost: async (navigateFunction) => {
+    set({ isLoading: true });
+    try {
+      setTimeout(async () => {
+        await Posts.deletePost(get().currentPost._id!);
+        set({ isLoading: false });
+        setTimeout(() => {
+          alert("Delete success!");
+          navigateFunction();
+        }, 200);
+      }, 1000);
+    } catch (error) {
+      set({ isLoading: false });
+      setTimeout(() => {
+        alert("Delete fail: " + error);
+      }, 200);
+    }
   },
   handleCommentPost: async () => {
-    const userName = localStorage.getItem("userName") ?? "";
+    const userName = localStorage.getItem("userName");
     if (!userName) {
       return;
     }
@@ -115,13 +150,27 @@ export const useStore = create<State>((set, get) => ({
     //check empty comment
     if (get().comment.trim() === "") return set({ comment: "" });
 
-    const response = await Posts.commentPost(get().currentPost._id!, {
-      content: get().comment,
-    });
-    set({ comment: "", listComment: response.data.comments });
+    set({ isLoading: true });
+
+
+    try {
+      setTimeout(async () => {
+        const response = await Posts.commentPost(get().currentPost._id!, {
+          content: get().comment,
+        });
+        set({
+          comment: "",
+          isLoading: false,
+          listComment: response.data.comments,
+        });
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      set({ isLoading: false });
+    }
   },
   handleEditPost: async (onClose: () => void) => {
-    console.log(get().currentPost);
+    set({ isLoading: true });
     let newPost: Post = {
       genres: get().genres,
       imgLink: get().imgLink,
@@ -129,12 +178,27 @@ export const useStore = create<State>((set, get) => ({
       content: get().content,
     };
 
-    const response = await Posts.updatePost(get().currentPost._id!, {
-      ...newPost,
-    });
-    set({ currentPost: response.data });
-    onClose();
-    console.log(response.data);
+    try {
+      const response = await Posts.updatePost(get().currentPost._id!, {
+        ...newPost,
+      });
+      setTimeout(() => {
+        if (response) {
+          set({ currentPost: response.data });
+          onClose();
+          console.log(response.data);
+          set({ isLoading: false });
+          setTimeout(() => {
+            alert("Edit post success");
+          }, 200);
+        }
+      }, 1000);
+    } catch (error) {
+      set({ isLoading: false });
+      setTimeout(() => {
+        alert("Edit post fail: " + error);
+      }, 200);
+    }
   },
   handleGetPostByAuthorId: async () => {
     const userId = localStorage.getItem("userId") ?? "";
@@ -144,6 +208,7 @@ export const useStore = create<State>((set, get) => ({
   },
   clearPostForm: () => {
     set({
+      isLoading: false,
       title: "",
       content: "",
       imgLink: "",

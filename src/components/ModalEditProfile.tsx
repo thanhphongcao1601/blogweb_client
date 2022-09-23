@@ -12,6 +12,8 @@ import {
   Button,
   Avatar,
   Center,
+  Flex,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Auths, UserUpdate } from "../api/authRequest";
@@ -27,38 +29,45 @@ interface UserDisclosureProps {
 export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-
+  const { currentUser, setCurrentUser, isLoading, setIsLoading } = useStore();
   const [userName, setUsername] = useState(
     localStorage.getItem("userName") ?? ""
   );
   const [avatarLink, setAvatarLink] = useState(
-    localStorage.getItem("avatarLink") ?? "zzzzz"
+    localStorage.getItem("avatarLink") ?? ""
   );
 
-  const { currentUser, setCurrentUser } = useStore();
-
   function handleUpdateUser(onClose: () => void) {
+    setIsLoading(true);
     const userId = localStorage.getItem("userId") ?? "";
-    Auths.updateUser(
-      userId,
-      {
-        name: userName,
-        avatarLink: avatarLink,
-      } as UserUpdate
-    ).then((response) => {
-      const data = response.data;
-      var newCurrentUser: User = {
-        userId: data.userId,
-        userName: data.userName,
-        token: currentUser.token,
-        email: data.email,
-        avatarLink: data.avatarLink,
-      };
-      setCurrentUser(newCurrentUser);
-      localStorage.setItem("userName", response.data.userName);
-      localStorage.setItem("avatarLink", response.data.avatarLink);
-      onClose();
-    });
+    Auths.updateUser(userId, {
+      name: userName,
+      avatarLink: avatarLink,
+    } as UserUpdate)
+      .then((response) => {
+        setIsLoading(false);
+        const data = response.data;
+        var newCurrentUser: User = {
+          userId: data.userId,
+          userName: data.userName,
+          token: currentUser.token,
+          email: data.email,
+          avatarLink: data.avatarLink,
+        };
+        setCurrentUser(newCurrentUser);
+        localStorage.setItem("userName", response.data.userName);
+        localStorage.setItem("avatarLink", response.data.avatarLink);
+        onClose();
+        setTimeout(() => {
+          alert("Update user success!");
+        }, 200);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setTimeout(() => {
+          alert("Update user fail: " + error);
+        }, 200);
+      });
   }
 
   return (
@@ -70,6 +79,24 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
     >
       <ModalOverlay />
       <ModalContent>
+        <Flex
+          zIndex={3}
+          display={isLoading ? "flex" : "none"}
+          height={"100%"}
+          width="100%"
+          bg="whiteAlpha.400"
+          position={"absolute"}
+          justifyContent="center"
+          alignItems={"center"}
+        >
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="lg"
+          />
+        </Flex>
         <ModalHeader>Edit your profile</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>

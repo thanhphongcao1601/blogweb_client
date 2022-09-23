@@ -6,7 +6,6 @@ import {
   Button,
   Flex,
   useDisclosure,
-  Spinner,
 } from "@chakra-ui/react";
 
 import { PostCard } from "../components/PostCard";
@@ -28,7 +27,7 @@ function Home() {
       <ModalCreatePost isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       <Container maxW={"7xl"} p="12" mt={"40px"}>
         <Flex justifyContent={"space-between"}>
-          <Heading as="h2">Latest</Heading>
+          <Heading as="h2">Latest post</Heading>
           {userName ? (
             <Button
               border={"2px"}
@@ -50,6 +49,7 @@ function Home() {
             .slice(0, 15)
             .map((post) => (
               <PostCard
+                showDetail={true}
                 postId={post._id || ""}
                 key={post._id}
                 imgLink={post.imgLink || ""}
