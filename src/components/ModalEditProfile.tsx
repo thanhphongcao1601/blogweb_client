@@ -18,7 +18,9 @@ import {
 import React, { useState } from "react";
 import { Auths, UserUpdate } from "../api/authRequest";
 import { User } from "../models/User";
-import { useStore } from "../zustand/store";
+import { useProfileStore } from "../zustand/ProfileStore";
+import { useStorage } from "../zustand/zustandStorage";
+
 
 interface UserDisclosureProps {
   isOpen: boolean;
@@ -27,22 +29,23 @@ interface UserDisclosureProps {
 }
 
 export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
+  const {userName, avatarLink, setUserName, setAvatarLink, userId} = useStorage();
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-  const { currentUser, setCurrentUser, isLoading, setIsLoading } = useStore();
-  const [userName, setUsername] = useState(
-    localStorage.getItem("userName") ?? ""
+  const { currentUser, setCurrentUser, isLoading, setIsLoading } =
+    useProfileStore();
+  const [newUserName, setNewUsername] = useState(
+    userName ?? ""
   );
-  const [avatarLink, setAvatarLink] = useState(
-    localStorage.getItem("avatarLink") ?? ""
+  const [newAvatarLink, setNewAvatarLink] = useState(
+    avatarLink ?? ""
   );
 
   function handleUpdateUser(onClose: () => void) {
     setIsLoading(true);
-    const userId = localStorage.getItem("userId") ?? "";
     Auths.updateUser(userId, {
-      name: userName,
-      avatarLink: avatarLink,
+      name: newUserName,
+      avatarLink: newAvatarLink,
     } as UserUpdate)
       .then((response) => {
         setIsLoading(false);
@@ -55,8 +58,8 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
           avatarLink: data.avatarLink,
         };
         setCurrentUser(newCurrentUser);
-        localStorage.setItem("userName", response.data.userName);
-        localStorage.setItem("avatarLink", response.data.avatarLink);
+        setUserName( response.data.userName);
+        setAvatarLink(response.data.avatarLink);
         onClose();
         setTimeout(() => {
           alert("Update user success!");
@@ -103,7 +106,7 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
           <Center>
             <Avatar
               size={"xl"}
-              src={avatarLink}
+              src={newAvatarLink}
               css={{
                 border: "2px solid white",
               }}
@@ -121,8 +124,8 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
           <FormControl mt={4}>
             <FormLabel>Name</FormLabel>
             <Input
-              value={userName || ""}
-              onChange={(e) => setUsername(e.target.value)}
+              value={newUserName || ""}
+              onChange={(e) => setNewUsername(e.target.value)}
               ref={initialRef}
               placeholder="Name"
             />
@@ -130,8 +133,8 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
           <FormControl mt={4}>
             <FormLabel>Image link</FormLabel>
             <Input
-              value={avatarLink || ""}
-              onChange={(e) => setAvatarLink(e.target.value)}
+              value={newAvatarLink || ""}
+              onChange={(e) => setNewAvatarLink(e.target.value)}
               placeholder="Image link"
             />
           </FormControl>
@@ -140,7 +143,6 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
         <ModalFooter>
           <Button
             onClick={() => {
-              console.log(userName, avatarLink);
               handleUpdateUser(props.onClose);
             }}
             colorScheme="blue"

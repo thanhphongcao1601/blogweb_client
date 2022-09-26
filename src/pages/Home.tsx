@@ -10,12 +10,13 @@ import {
 
 import { PostCard } from "../components/PostCard";
 import { ModalCreatePost } from "../components/ModalCreatePost";
-import { useStore } from "../zustand/store";
 import { useEffect } from "react";
+import { useHomeStore } from "../zustand/HomeStore";
+import { useStorage } from "../zustand/zustandStorage";
 
 function Home() {
-  const userName = localStorage.getItem("userName");
-  const { listPost, handleGetAllPost, clearPostForm } = useStore();
+  const {userName} = useStorage();
+  const { listPost, handleGetAllPost, clearPostForm } = useHomeStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {

@@ -15,6 +15,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Auths, UserUpdate } from "../api/authRequest";
+import { useStorage } from "../zustand/zustandStorage";
+
 
 interface UserDisclosureProps {
   isOpen: boolean;
@@ -23,7 +25,7 @@ interface UserDisclosureProps {
 }
 
 export const ModalChangePassword: React.FC<UserDisclosureProps> = (props) => {
-  const email = localStorage.getItem("email");
+  const {email} = useStorage();
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 

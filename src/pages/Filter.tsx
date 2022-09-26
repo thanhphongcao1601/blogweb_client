@@ -9,10 +9,10 @@ import {
 
 import { PostCard } from "../components/PostCard";
 import { useEffect } from "react";
-import { useStore } from "../zustand/store";
+import { useFilterStore } from "../zustand/FilterStore";
 
 function Filter() {
-  const { listSearch, handleFilter } = useStore();
+  const { listFilter, handleFilter } = useFilterStore();
 
   useEffect(() => {
     handleFilter("");
@@ -39,7 +39,7 @@ function Filter() {
         </Flex>
         <Divider marginTop="5" />
         <Wrap spacing="30px" marginTop="5">
-          {listSearch.reverse().map((post) => (
+          {listFilter.slice(0).reverse().map((post) => (
             <PostCard
               showDetail={true}
               postId={post._id || ""}

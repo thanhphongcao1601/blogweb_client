@@ -20,13 +20,12 @@ import { ModalEditPost } from "../components/ModalEditPost";
 import { PostAuthor } from "../components/PostAuthor";
 import { PostComment } from "../components/PostComment";
 import PostTags from "../components/PostTags";
-import { useStore } from "../zustand/store";
+import { usePostDetailStore } from "../zustand/PostDetailStore";
+import { useStorage } from "../zustand/zustandStorage";
 
 export default function PostDetail() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const userId = localStorage.getItem("userId");
-  const userName = localStorage.getItem("userName");
-  const avatarLink = localStorage.getItem("avatarLink") ?? "";
+  const { userId, userName, avatarLink } = useStorage();
   const navigate = useNavigate();
 
   const {
@@ -36,8 +35,8 @@ export default function PostDetail() {
     listComment,
     setComment,
     handleGetPost,
-    isLoading,
-  } = useStore();
+    isCommentLoading,
+  } = usePostDetailStore();
 
   const params = useParams();
 
@@ -96,7 +95,7 @@ export default function PostDetail() {
             <Avatar borderRadius="full" boxSize="50px" src={avatarLink} />
             <Box w="100%">
               <Textarea
-                readOnly={userName ? false : true}
+                disabled={userName && !isCommentLoading ? false : true}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder={
@@ -107,12 +106,14 @@ export default function PostDetail() {
                 <Spacer />
                 {userName ? (
                   <Button
-                    onClick={handleCommentPost}
+                    onClick={
+                      !isCommentLoading ? handleCommentPost : () => {}
+                    }
                     alignSelf={"end"}
                     mt={"5px"}
                     justifyContent="right"
                   >
-                    {!isLoading ? (
+                    {!isCommentLoading ? (
                       "Comment"
                     ) : (
                       <Spinner

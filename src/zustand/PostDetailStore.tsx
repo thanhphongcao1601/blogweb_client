@@ -4,11 +4,11 @@ import { Post } from "../models/Post";
 import { PostComment } from "../models/PostComment";
 import { User } from "../models/User";
 
-type State = {
+type PostDetailState = {
+  isCommentLoading: boolean;
+  setIsCommentLoading: (isCommentLoading: boolean) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
-  listUserPost: Post[];
-  setListUserPost: (listUserPost: Post[]) => void;
   currentUser: User;
   setCurrentUser: (user: User) => void;
   comment: string;
@@ -17,34 +17,28 @@ type State = {
   setListComment: (listComment: PostComment[]) => void;
   currentPost: Post;
   listPost: Post[];
-  listSearch: Post[];
   genres: string[];
   title: string;
   content: string;
   imgLink: string;
   setCurrentPost: (currentPost: Post) => void;
   setListPost: (listPost: Post[]) => void;
-  setListSearch: (listSearch: Post[]) => void;
   setGenres: (genres: string[]) => void;
   setContent: (content: string) => void;
   setImgLink: (imgLink: string) => void;
   setTitle: (title: string) => void;
-  handleFilter: (filterString: string) => void;
-  handleAddPost: (onClose: () => void) => void;
-  handleGetAllPost: () => void;
   handleGetPost: (postId: string) => void;
   handleDeletePost: (navigate: () => void) => void;
   handleCommentPost: () => void;
   handleEditPost: (onClose: () => void) => void;
-  handleGetPostByAuthorId: () => void;
   clearPostForm: () => void;
 };
 
-export const useStore = create<State>((set, get) => ({
+export const usePostDetailStore = create<PostDetailState>((set, get) => ({
+  isCommentLoading: false,
+  setIsCommentLoading: (isCommentLoading) => set({ isCommentLoading }),
   isLoading: false,
   setIsLoading: (isLoading) => set({ isLoading }),
-  listUserPost: [],
-  setListUserPost: (listUserPost) => set({ listUserPost }),
   currentUser: {} as User,
   setCurrentUser: (currentUser) => set({ currentUser }),
   comment: "",
@@ -60,53 +54,10 @@ export const useStore = create<State>((set, get) => ({
   imgLink: "",
   setCurrentPost: (currentPost) => set({ currentPost }),
   setListPost: (listPost) => set({ listPost }),
-  setListSearch: (listSearch) => set({ listSearch }),
   setGenres: (genres) => set({ genres }),
   setTitle: (title) => set({ title }),
   setContent: (content) => set({ content }),
   setImgLink: (imgLink) => set({ imgLink }),
-  handleFilter: async (filterString) => {
-    const response = await Posts.filterPost(filterString);
-    set({ listSearch: await response.data });
-  },
-  handleAddPost: async (onClose) => {
-    set({ isLoading: true });
-    const userName = localStorage.getItem("userName") ?? "";
-    console.log(userName);
-    let newPost: Post = {
-      genres: get().genres.length > 0 ? get().genres : ["other"],
-      imgLink: get().imgLink,
-      title: get().title,
-      content: get().content,
-    };
-    try {
-      const response = await Posts.addPost(newPost);
-      //api request delay "chay bang com"
-      setTimeout(function () {
-        if (response) {
-          set({ isLoading: false });
-          console.log(response);
-          set((state) => ({ listPost: [...state.listPost, response.data] }));
-          //empty form
-          set({
-            content: "",
-            title: "",
-            imgLink: "",
-            genres: ["other"],
-          });
-          onClose();
-          setTimeout(() => {
-            alert("Add post success");
-          }, 200);
-        }
-      }, 1000);
-    } catch (error) {
-      set({ isLoading: false });
-      setTimeout(() => {
-        alert("Add post fail: " + error);
-      }, 200);
-    }
-  },
   handleGetAllPost: async () => {
     const response = await Posts.getAllPosts();
     set({ listPost: response.data });
@@ -142,17 +93,17 @@ export const useStore = create<State>((set, get) => ({
     }
   },
   handleCommentPost: async () => {
-    const userName = localStorage.getItem("userName");
-    if (!userName) {
+    const userStorage = localStorage.getItem("userStorage") ?? "";
+    console.log(JSON.parse(userStorage));
+    const userId = JSON.parse(userStorage).state.userId;
+    console.log(userId);
+    if (!userId) {
       return;
     }
-
     //check empty comment
     if (get().comment.trim() === "") return set({ comment: "" });
 
-    set({ isLoading: true });
-
-
+    set({ isCommentLoading: true });
     try {
       setTimeout(async () => {
         const response = await Posts.commentPost(get().currentPost._id!, {
@@ -160,13 +111,13 @@ export const useStore = create<State>((set, get) => ({
         });
         set({
           comment: "",
-          isLoading: false,
+          isCommentLoading: false,
           listComment: response.data.comments,
         });
       }, 1000);
     } catch (error) {
       console.log(error);
-      set({ isLoading: false });
+      set({ isCommentLoading: false });
     }
   },
   handleEditPost: async (onClose: () => void) => {
@@ -199,12 +150,6 @@ export const useStore = create<State>((set, get) => ({
         alert("Edit post fail: " + error);
       }, 200);
     }
-  },
-  handleGetPostByAuthorId: async () => {
-    const userId = localStorage.getItem("userId") ?? "";
-    console.log(userId);
-    const response = await Posts.getPostByAuthorId(userId);
-    set({ listUserPost: response.data });
   },
   clearPostForm: () => {
     set({

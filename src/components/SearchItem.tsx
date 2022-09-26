@@ -17,6 +17,7 @@ export const SearchItem: React.FC<SearchItemProps> = (props) => {
   return (
     <Flex bg={useColorModeValue("gray.100", "gray.900")}>
       <Image
+        cursor="pointer"
         margin={"10px"}
         borderRadius={"lg"}
         fallbackSrc="https://via.placeholder.com/150x100?text=No+Image"

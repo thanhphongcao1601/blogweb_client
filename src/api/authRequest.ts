@@ -1,22 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { AppSettings } from "../helper/constant";
-
-const instance = axios.create({
-  baseURL: AppSettings.BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 15000,
-});
-
-instance.interceptors.request.use(async (config) => {
-  let token = localStorage.getItem("token");
-  if (token) {
-    localStorage.setItem("token", token);
-    config.headers!.Authorization = "Bearer " + token;
-  }
-  return config;
-});
+import { instance } from "./apiConfig";
 
 const responseBody = (response: AxiosResponse) => response.data;
 

@@ -16,7 +16,6 @@ interface PostCardProps {
 }
 
 export const PostCard: React.FC<PostCardProps> = (props) => {
-  const userId = localStorage.getItem("userId");
   return (
     <WrapItem width={{ base: "100%", sm: "100%", md: "45%", lg: "30%" }}>
       <Box w="100%">
@@ -47,7 +46,9 @@ export const PostCard: React.FC<PostCardProps> = (props) => {
             <PostTags tags={props.genres} marginTop="3" />
             <Heading fontSize="xl" marginTop="2">
               <Link textDecoration="none" _hover={{ textDecoration: "none" }}>
-                <Text noOfLines={[1, 2]}>{props.title}</Text>
+                <Text cursor={"auto"} noOfLines={[1, 2]}>
+                  {props.title}
+                </Text>
               </Link>
             </Heading>
             <Text as="p" fontSize="md" marginTop="2" noOfLines={[1, 5]}>

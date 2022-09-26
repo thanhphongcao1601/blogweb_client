@@ -17,11 +17,11 @@ import { useLogin } from "./Login.hooks";
 export default function Login() {
   const {
     errMessage,
-    email,
+    emailLogin,
     setErrMessage,
-    setEmail,
-    password,
-    setPassword,
+    setEmailLogin,
+    passwordLogin,
+    setPasswordLogin,
     handleLogin,
     isLoading,
   } = useLogin();
@@ -39,21 +39,21 @@ export default function Login() {
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>
             <Input
-              value={email}
+              value={emailLogin}
               type="email"
               onChange={(e) => {
                 setErrMessage("");
-                setEmail(e.target.value);
+                setEmailLogin(e.target.value);
               }}
             />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Password</FormLabel>
             <Input
-              value={password}
+              value={passwordLogin}
               onChange={(e) => {
                 setErrMessage("");
-                setPassword(e.target.value);
+                setPasswordLogin(e.target.value);
               }}
               type="password"
             />

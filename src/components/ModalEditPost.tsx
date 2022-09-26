@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useStore } from "../zustand/store";
+import { usePostDetailStore } from "../zustand/PostDetailStore";
 
 interface UserDisclosureProps {
   isOpen: boolean;
@@ -42,7 +42,7 @@ export const ModalEditPost: React.FC<UserDisclosureProps> = (props) => {
     setImgLink,
     setTitle,
     isLoading,
-  } = useStore();
+  } = usePostDetailStore();
 
   return (
     <Modal

@@ -17,7 +17,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useStore } from "../zustand/store";
+import { useHomeStore } from "../zustand/HomeStore";
 
 interface UserDisclosureProps {
   isOpen: boolean;
@@ -39,7 +39,7 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
     setTitle,
     handleAddPost,
     isLoading,
-  } = useStore();
+  } = useHomeStore();
 
   const [errMessage, setErrMessage] = useState("");
 

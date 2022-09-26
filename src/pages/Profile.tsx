@@ -16,14 +16,25 @@ import {
 import { PostCard } from "../components/PostCard";
 import { EditIcon } from "@chakra-ui/icons";
 import { ModalEditProfile } from "../components/ModalEditProfile";
-import { useStore } from "../zustand/store";
 import { useEffect } from "react";
+import { useProfileStore } from "../zustand/ProfileStore";
+import { User } from "../models/User";
+import { useStorage } from "../zustand/zustandStorage";
 
 export default function Profile() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentUser, listUserPost, handleGetPostByAuthorId } = useStore();
+  const { currentUser, setCurrentUser, listUserPost, handleGetPostByAuthorId } =
+    useProfileStore();
+  const { userId, userName, avatarLink, email, token } = useStorage();
 
   useEffect(() => {
+    setCurrentUser({
+      userId: userId,
+      userName: userName,
+      avatarLink: avatarLink,
+      token: token,
+      email: email,
+    } as User);
     handleGetPostByAuthorId();
   }, []);
 

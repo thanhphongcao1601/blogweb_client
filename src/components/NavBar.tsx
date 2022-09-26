@@ -20,12 +20,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Link as ReachLink, useNavigate } from "react-router-dom";
+import { useStorage } from "../zustand/zustandStorage";
 import { ModalChangePassword } from "./ModalChangePassword";
 import { useNavBar } from "./NavBar.hooks";
 import { SearchItem } from "./SearchItem";
 
 export default function NavBar() {
-  const userName = localStorage.getItem("userName");
+  const {userName} = useStorage();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 

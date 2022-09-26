@@ -4,24 +4,27 @@ import { useNavigate } from "react-router-dom";
 import { Posts } from "../api/postRequest";
 import { Post } from "../models/Post";
 import { User } from "../models/User";
-import { useStore } from "../zustand/store";
+import { useProfileStore } from "../zustand/ProfileStore";
+import { useStorage } from "../zustand/zustandStorage";
 
 export function useNavBar() {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const {userName, userId, avatarLink, email} = useStorage();
   const navigate = useNavigate();
+  const { colorMode, toggleColorMode } = useColorMode();
+
   const [searchValue, setSearchValue] = useState("");
   const [listSearch, setListSearch] = useState([] as Post[]);
-  const { setCurrentUser, currentUser } = useStore();
+
+  const { setCurrentUser, currentUser } = useProfileStore();
 
   useEffect(() => {
     setCurrentUser({
-      userName: localStorage.getItem("userName") ?? "",
-      avatarLink: localStorage.getItem("avatarLink") ?? "",
-      email: localStorage.getItem("email") ?? "",
-      userId: localStorage.getItem("userId") ?? "",
+      userName: userName ?? "",
+      avatarLink: avatarLink ?? "",
+      email: email ?? "",
+      userId: userId ?? "",
     } as User);
   }, []);
-
 
   function handleLogout() {
     setCurrentUser({} as User);
