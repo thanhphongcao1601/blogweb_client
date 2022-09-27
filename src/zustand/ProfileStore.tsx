@@ -2,7 +2,6 @@ import create from "zustand";
 import { Posts } from "../api/postRequest";
 import { Post } from "../models/Post";
 import { User } from "../models/User";
-import { useStorage } from "./zustandStorage";
 
 type ProfileState = {
   isLoading: boolean;
@@ -23,8 +22,8 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   setCurrentUser: (currentUser) => set({ currentUser }),
   comment: "",
   handleGetPostByAuthorId: async () => {
-    const {userId} = useStorage();
-    console.log(userId);
+    const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
+    const userId = userStorage.state.userId;
     const response = await Posts.getPostByAuthorId(userId);
     set({ listUserPost: response.data });
   },

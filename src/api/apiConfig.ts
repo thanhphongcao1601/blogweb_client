@@ -1,7 +1,5 @@
 import axios from "axios";
 import { AppSettings } from "../helper/constant";
-const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
-const token = userStorage.state.token;
 
 export const instance = axios.create({
   baseURL: AppSettings.BASE_URL,
@@ -12,6 +10,8 @@ export const instance = axios.create({
 });
 
 instance.interceptors.request.use(async (config) => {
+  const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
+  const token = userStorage.state.token;
   console.log("token", token);
   if (token) {
     config.headers!.Authorization = "Bearer " + token;

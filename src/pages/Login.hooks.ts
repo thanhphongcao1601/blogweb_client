@@ -13,7 +13,7 @@ export function useLogin() {
   const { setCurrentUser } = useProfileStore();
   const navigate = useNavigate();
 
-  const { token, setUserName, setUserId, setAvatarLink, setToken, setEmail } =
+  const { setUserName, setUserId, setAvatarLink, setToken, setEmail } =
     useStorage();
 
   function handleLogin() {

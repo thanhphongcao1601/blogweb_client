@@ -1,5 +1,4 @@
-import axios, { AxiosResponse } from "axios";
-import { AppSettings } from "../helper/constant";
+import { AxiosResponse } from "axios";
 import { Post } from "../models/Post";
 import { instance } from "./apiConfig";
 

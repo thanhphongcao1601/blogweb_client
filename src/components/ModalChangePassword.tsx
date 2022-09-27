@@ -17,7 +17,6 @@ import React, { useState } from "react";
 import { Auths, UserUpdate } from "../api/authRequest";
 import { useStorage } from "../zustand/zustandStorage";
 
-
 interface UserDisclosureProps {
   isOpen: boolean;
   onOpen: () => void;
@@ -25,14 +24,20 @@ interface UserDisclosureProps {
 }
 
 export const ModalChangePassword: React.FC<UserDisclosureProps> = (props) => {
-  const {email} = useStorage();
+  const { email } = useStorage();
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   async function changePassword(onClose: () => void) {
+    if (newPassword.length < 6) {
+      setTimeout(() => {
+        alert("Password must be at least 6 character");
+      }, 200);
+      return;
+    }
     setIsLoading(true);
     try {
       const response = await Auths.changePassword({
@@ -55,7 +60,7 @@ export const ModalChangePassword: React.FC<UserDisclosureProps> = (props) => {
       setOldPassword("");
       setNewPassword("");
       setIsLoading(false);
-      alert("Change password fail: " + error);
+      alert("Password is not correct");
     }
   }
 

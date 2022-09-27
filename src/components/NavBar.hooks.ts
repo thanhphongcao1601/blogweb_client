@@ -8,7 +8,17 @@ import { useProfileStore } from "../zustand/ProfileStore";
 import { useStorage } from "../zustand/zustandStorage";
 
 export function useNavBar() {
-  const {userName, userId, avatarLink, email} = useStorage();
+  const {
+    userName,
+    userId,
+    avatarLink,
+    email,
+    setUserName,
+    setUserId,
+    setAvatarLink,
+    setEmail,
+    setToken,
+  } = useStorage();
   const navigate = useNavigate();
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -28,7 +38,11 @@ export function useNavBar() {
 
   function handleLogout() {
     setCurrentUser({} as User);
-    localStorage.clear();
+    setToken("");
+    setUserId("");
+    setUserName("");
+    setAvatarLink("");
+    setEmail("");
     navigate("/login", { replace: true });
   }
 

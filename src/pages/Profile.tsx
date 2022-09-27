@@ -22,10 +22,10 @@ import { User } from "../models/User";
 import { useStorage } from "../zustand/zustandStorage";
 
 export default function Profile() {
+  const { userId, userName, avatarLink, email, token } = useStorage();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentUser, setCurrentUser, listUserPost, handleGetPostByAuthorId } =
     useProfileStore();
-  const { userId, userName, avatarLink, email, token } = useStorage();
 
   useEffect(() => {
     setCurrentUser({

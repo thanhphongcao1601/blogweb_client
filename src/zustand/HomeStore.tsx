@@ -1,7 +1,6 @@
 import create from "zustand";
 import { Posts } from "../api/postRequest";
 import { Post } from "../models/Post";
-import { useStorage } from "./zustandStorage";
 
 type HomeState = {
   isLoading: boolean;
@@ -37,7 +36,8 @@ export const useHomeStore = create<HomeState>((set, get) => ({
   setImgLink: (imgLink) => set({ imgLink }),
   handleAddPost: async (onClose) => {
     set({ isLoading: true });
-    const {userName} = useStorage();
+    const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
+    const userName = userStorage.state.userName;
     console.log(userName);
     let newPost: Post = {
       genres: get().genres.length > 0 ? get().genres : ["other"],
@@ -87,7 +87,3 @@ export const useHomeStore = create<HomeState>((set, get) => ({
     });
   },
 }));
-function userStorage() {
-  throw new Error("Function not implemented.");
-}
-

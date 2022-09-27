@@ -42,7 +42,7 @@ export function useSignUp() {
         .catch((error) => {
           console.log(error);
           setIsLoading(false);
-          setErrMessage("Email must be unique " + error);
+          setErrMessage("Email must be unique!");
         });
     }, 1000);
   }

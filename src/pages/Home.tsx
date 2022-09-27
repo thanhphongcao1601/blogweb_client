@@ -7,7 +7,6 @@ import {
   Flex,
   useDisclosure,
 } from "@chakra-ui/react";
-
 import { PostCard } from "../components/PostCard";
 import { ModalCreatePost } from "../components/ModalCreatePost";
 import { useEffect } from "react";
