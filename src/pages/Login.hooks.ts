@@ -19,36 +19,34 @@ export function useLogin() {
   function handleLogin() {
     setIsLoading(true);
 
-    setTimeout(() => {
-      Auths.login({ email: emailLogin, password: passwordLogin })
-        .then((response) => {
-          if (response.status === "success") {
-            setIsLoading(false);
-            const data = response.data;
-
-            setToken(data.token);
-            setUserId(data.userId);
-            setUserName(data.userName);
-            setAvatarLink(data.avatarLink);
-            setEmail(data.email);
-
-            var loggedInUser: User = {
-              userName: data.userName,
-              userId: data.userId,
-              token: data.token,
-              email: data.email,
-              avatarLink: data.avatarLink,
-            };
-
-            setCurrentUser(loggedInUser);
-            navigate("/", { replace: true });
-          }
-        })
-        .catch((error) => {
+    Auths.login({ email: emailLogin, password: passwordLogin })
+      .then((response) => {
+        if (response.status === "success") {
           setIsLoading(false);
-          setErrMessage("Username and password is not valid!");
-        });
-    }, 1000);
+          const data = response.data;
+
+          setToken(data.token);
+          setUserId(data.userId);
+          setUserName(data.userName);
+          setAvatarLink(data.avatarLink);
+          setEmail(data.email);
+
+          var loggedInUser: User = {
+            userName: data.userName,
+            userId: data.userId,
+            token: data.token,
+            email: data.email,
+            avatarLink: data.avatarLink,
+          };
+
+          setCurrentUser(loggedInUser);
+          navigate("/", { replace: true });
+        }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setErrMessage("Username and password is not valid!");
+      });
   }
   return {
     emailLogin,

@@ -30,21 +30,19 @@ export function useSignUp() {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      Auths.register({ email: email, password: password, name: name })
-        .then((response) => {
-          setIsLoading(false);
-          if (response.status === "success") {
-            navigate("/login", { replace: true });
-            alert("Sign up success!");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          setIsLoading(false);
-          setErrMessage("Email must be unique!");
-        });
-    }, 1000);
+    Auths.register({ email: email, password: password, name: name })
+      .then((response) => {
+        setIsLoading(false);
+        if (response.status === "success") {
+          navigate("/login", { replace: true });
+          alert("Sign up success!");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+        setErrMessage("Email must be unique!");
+      });
   }
   return {
     isValidEmail,

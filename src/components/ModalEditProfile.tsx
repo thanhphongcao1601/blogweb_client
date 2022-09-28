@@ -61,15 +61,11 @@ export const ModalEditProfile: React.FC<UserDisclosureProps> = (props) => {
         setUserName( response.data.userName);
         setAvatarLink(response.data.avatarLink);
         onClose();
-        setTimeout(() => {
-          alert("Update user success!");
-        }, 200);
+        alert("Update user success!");
       })
       .catch((error) => {
         setIsLoading(false);
-        setTimeout(() => {
-          alert("Update user fail: " + error);
-        }, 200);
+        alert("Update user fail: " + error);
       });
   }
 

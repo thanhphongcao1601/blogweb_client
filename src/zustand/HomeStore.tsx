@@ -36,9 +36,6 @@ export const useHomeStore = create<HomeState>((set, get) => ({
   setImgLink: (imgLink) => set({ imgLink }),
   handleAddPost: async (onClose) => {
     set({ isLoading: true });
-    const userStorage = JSON.parse(localStorage.getItem("userStorage") ?? "");
-    const userName = userStorage.state.userName;
-    console.log(userName);
     let newPost: Post = {
       genres: get().genres.length > 0 ? get().genres : ["other"],
       imgLink: get().imgLink,
@@ -47,30 +44,22 @@ export const useHomeStore = create<HomeState>((set, get) => ({
     };
     try {
       const response = await Posts.addPost(newPost);
-      //api request delay "chay bang com"
-      setTimeout(function () {
-        if (response) {
-          set({ isLoading: false });
-          console.log(response);
-          set((state) => ({ listPost: [...state.listPost, response.data] }));
-          //empty form
-          set({
-            content: "",
-            title: "",
-            imgLink: "",
-            genres: ["other"],
-          });
-          onClose();
-          setTimeout(() => {
-            alert("Add post success");
-          }, 200);
-        }
-      }, 1000);
+      if (response) {
+        set({ isLoading: false });
+        set((state) => ({ listPost: [...state.listPost, response.data] }));
+        //empty form
+        set({
+          content: "",
+          title: "",
+          imgLink: "",
+          genres: ["other"],
+        });
+        onClose();
+        alert("Add post success");
+      }
     } catch (error) {
       set({ isLoading: false });
-      setTimeout(() => {
-        alert("Add post fail: " + error);
-      }, 200);
+      alert("Add post fail: " + error);
     }
   },
   handleGetAllPost: async () => {
