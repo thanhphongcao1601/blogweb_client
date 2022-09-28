@@ -33,9 +33,7 @@ export const ModalChangePassword: React.FC<UserDisclosureProps> = (props) => {
 
   async function changePassword(onClose: () => void) {
     if (newPassword.length < 6) {
-      setTimeout(() => {
-        alert("Password must be at least 6 character");
-      }, 200);
+      alert("Password must be at least 6 character");
       return;
     }
     setIsLoading(true);
@@ -45,17 +43,12 @@ export const ModalChangePassword: React.FC<UserDisclosureProps> = (props) => {
         password: oldPassword,
         newPassword: newPassword,
       } as UserUpdate);
-      setTimeout(async () => {
-        if (response) {
-          setOldPassword("");
-          setNewPassword("");
-          setIsLoading(false);
-          setTimeout(() => {
-            alert("Change password success!");
-            onClose();
-          }, 200);
-        }
-      }, 1000);
+      if (response) {
+        setOldPassword("");
+        setNewPassword("");
+        setIsLoading(false);
+        alert("Change password success!");
+      }
     } catch (error) {
       setOldPassword("");
       setNewPassword("");

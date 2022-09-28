@@ -77,26 +77,18 @@ export const usePostDetailStore = create<PostDetailState>((set, get) => ({
   handleDeletePost: async (navigateFunction) => {
     set({ isLoading: true });
     try {
-      setTimeout(async () => {
-        await Posts.deletePost(get().currentPost._id!);
-        set({ isLoading: false });
-        setTimeout(() => {
-          alert("Delete success!");
-          navigateFunction();
-        }, 200);
-      }, 1000);
+      await Posts.deletePost(get().currentPost._id!);
+      set({ isLoading: false });
+      alert("Delete success!");
+      navigateFunction();
     } catch (error) {
       set({ isLoading: false });
-      setTimeout(() => {
-        alert("Delete fail: " + error);
-      }, 200);
+      alert("Delete fail: " + error);
     }
   },
   handleCommentPost: async () => {
     const userStorage = localStorage.getItem("userStorage") ?? "";
-    console.log(JSON.parse(userStorage));
     const userId = JSON.parse(userStorage).state.userId;
-    console.log(userId);
     if (!userId) {
       return;
     }
@@ -105,16 +97,14 @@ export const usePostDetailStore = create<PostDetailState>((set, get) => ({
 
     set({ isCommentLoading: true });
     try {
-      setTimeout(async () => {
-        const response = await Posts.commentPost(get().currentPost._id!, {
-          content: get().comment,
-        });
-        set({
-          comment: "",
-          isCommentLoading: false,
-          listComment: response.data.comments,
-        });
-      }, 1000);
+      const response = await Posts.commentPost(get().currentPost._id!, {
+        content: get().comment,
+      });
+      set({
+        comment: "",
+        isCommentLoading: false,
+        listComment: response.data.comments,
+      });
     } catch (error) {
       console.log(error);
       set({ isCommentLoading: false });
@@ -133,22 +123,15 @@ export const usePostDetailStore = create<PostDetailState>((set, get) => ({
       const response = await Posts.updatePost(get().currentPost._id!, {
         ...newPost,
       });
-      setTimeout(() => {
-        if (response) {
-          set({ currentPost: response.data });
-          onClose();
-          console.log(response.data);
-          set({ isLoading: false });
-          setTimeout(() => {
-            alert("Edit post success");
-          }, 200);
-        }
-      }, 1000);
+      if (response) {
+        set({ currentPost: response.data });
+        onClose();
+        set({ isLoading: false });
+        alert("Edit post success");
+      }
     } catch (error) {
       set({ isLoading: false });
-      setTimeout(() => {
-        alert("Edit post fail: " + error);
-      }, 200);
+      alert("Edit post fail: " + error);
     }
   },
   clearPostForm: () => {

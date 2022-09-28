@@ -84,7 +84,6 @@ export const ModalCreatePost: React.FC<UserDisclosureProps> = (props) => {
               placeholder="Other"
               onChange={(e) => {
                 setGenres([e.target.value]);
-                console.log(e.target.value);
               }}
             >
               <option value="education">Education</option>
