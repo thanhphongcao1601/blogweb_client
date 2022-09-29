@@ -15,9 +15,9 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/blogweb_client/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/filter" element={<Filter />} />
+        <Route path="/blogweb_client/filter" element={<Filter />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/postdetail/:postId" element={<PostDetail />} />
         <Route path="*" element={<NotFound />} />
